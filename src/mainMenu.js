@@ -5,11 +5,10 @@ import { getConditionImagePath } from "./conditions";
 import {
   getForecastWeather,
   getFavoriteCities,
-  debounce,
   removeCityFromFavorites,
   searchLocation,
 } from "./api";
-import { formatTemperature } from "./utils";
+import { formatTemperature, debounce } from "./utils";
 
 export async function loadMainMenu() {
   rootElement.classList.remove("show-background");
