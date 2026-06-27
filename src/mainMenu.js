@@ -158,8 +158,9 @@ function registerEventListeners() {
       btn.parentElement.remove();
     });
   });
-
-  editButton.addEventListener("click", () => {
+if (editButton) {
+    editButton.addEventListener("click", () => {
+       editButton.addEventListener("click", () => {
     const EDIT_ATTRIBUTE = "data-edit-mode";
 
     if (!editButton.getAttribute(EDIT_ATTRIBUTE)) {
@@ -178,6 +179,8 @@ function registerEventListeners() {
       });
     }
   });
+    });
+ 
   const searchBar = document.querySelector(".main-menu__search-input");
 
   searchBar.addEventListener(
