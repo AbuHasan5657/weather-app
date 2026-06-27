@@ -158,61 +158,64 @@ function registerEventListeners() {
       btn.parentElement.remove();
     });
   });
-if (editButton) {
+  if (editButton) {
     editButton.addEventListener("click", () => {
-       editButton.addEventListener("click", () => {
-    const EDIT_ATTRIBUTE = "data-edit-mode";
+      editButton.addEventListener("click", () => {
+        const EDIT_ATTRIBUTE = "data-edit-mode";
 
-    if (!editButton.getAttribute(EDIT_ATTRIBUTE)) {
-      editButton.setAttribute(EDIT_ATTRIBUTE, "true");
-      editButton.textContent = "Fertig";
+        if (!editButton.getAttribute(EDIT_ATTRIBUTE)) {
+          editButton.setAttribute(EDIT_ATTRIBUTE, "true");
+          editButton.textContent = "Fertig";
 
-      deleteButtons.forEach((btn) => {
-        btn.classList.add("city-wrapper__delete--show");
+          deleteButtons.forEach((btn) => {
+            btn.classList.add("city-wrapper__delete--show");
+          });
+        } else {
+          editButton.removeAttribute(EDIT_ATTRIBUTE);
+          editButton.textContent = "Bearbeiten";
+
+          deleteButtons.forEach((btn) => {
+            btn.classList.remove("city-wrapper__delete--show");
+          });
+        }
       });
-    } else {
-      editButton.removeAttribute(EDIT_ATTRIBUTE);
-      editButton.textContent = "Bearbeiten";
+    });
 
-      deleteButtons.forEach((btn) => {
-        btn.classList.remove("city-wrapper__delete--show");
+    const searchBar = document.querySelector(".main-menu__search-input");
+
+    searchBar.addEventListener(
+      "input",
+      debounce(async (e) => {
+        const q = e.target.value;
+
+        let searchResults = [];
+
+        if (q.length > 1) {
+          renderSearchResultsLoading();
+          searchResults = await searchLocation(q);
+        }
+
+        renderSearchResults(searchResults);
+        registerSearchResultsEventListeners();
+      }, 500),
+    );
+
+    document.addEventListener("click", bodyClickHandler);
+    searchBar.addEventListener("focusin", () => {
+      const searchResults = document.querySelector(
+        ".main-menu__search-results",
+      );
+      searchResults.classList.remove("main-menu__search-results--hidden");
+    });
+    const cities = document.querySelectorAll(".city");
+
+    cities.forEach((city) => {
+      city.addEventListener("click", () => {
+        const cityName = city.getAttribute("data-city-name");
+        const cityId = city.getAttribute("data-city-id");
+
+        loadDetailView(cityName, cityId);
       });
-    }
-  });
     });
- 
-  const searchBar = document.querySelector(".main-menu__search-input");
-
-  searchBar.addEventListener(
-    "input",
-    debounce(async (e) => {
-      const q = e.target.value;
-
-      let searchResults = [];
-
-      if (q.length > 1) {
-        renderSearchResultsLoading();
-        searchResults = await searchLocation(q);
-      }
-
-      renderSearchResults(searchResults);
-      registerSearchResultsEventListeners();
-    }, 500),
-  );
-
-  document.addEventListener("click", bodyClickHandler);
-  searchBar.addEventListener("focusin", () => {
-    const searchResults = document.querySelector(".main-menu__search-results");
-    searchResults.classList.remove("main-menu__search-results--hidden");
-  });
-  const cities = document.querySelectorAll(".city");
-
-  cities.forEach((city) => {
-    city.addEventListener("click", () => {
-      const cityName = city.getAttribute("data-city-name");
-      const cityId = city.getAttribute("data-city-id");
-
-      loadDetailView(cityName, cityId);
-    });
-  });
+  }
 }
